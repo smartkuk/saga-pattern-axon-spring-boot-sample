@@ -4,16 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.progressivecoder.saga-pattern</groupId>
+    <groupId>com.bwg</groupId>
     <artifactId>saga-axon-server-spring-boot</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    
+    <properties>
+      <java.version>1.8</java.version>
+      <docker.image.prefix>smartkuk</docker.image.prefix>
+    </properties>
 
     <modules>
-        <module>order-service</module>
-        <module>payment-service</module>
-        <module>core-apis</module>
-        <module>shipping-service</module>
+      <module>order-service</module>
+      <module>payment-service</module>
+      <module>core-apis</module>
+      <module>shipping-service</module>
     </modules>
-
+    
 </project>
