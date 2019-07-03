@@ -13,6 +13,9 @@ import com.progressivecoder.ecommerce.commands.UpdateOrderStatusCommand;
 import com.progressivecoder.ecommerce.events.OrderCreatedEvent;
 import com.progressivecoder.ecommerce.events.OrderUpdatedEvent;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Aggregate
 public class OrderAggregate {
 
@@ -31,6 +34,7 @@ public class OrderAggregate {
 
   @CommandHandler
   public OrderAggregate(CreateOrderCommand createOrderCommand) {
+    log.info(">>>Apply CreateOrderCommand");
     AggregateLifecycle
         .apply(new OrderCreatedEvent(createOrderCommand.orderId, createOrderCommand.itemType,
             createOrderCommand.price, createOrderCommand.currency, createOrderCommand.orderStatus));
@@ -43,10 +47,12 @@ public class OrderAggregate {
     this.price = orderCreatedEvent.price;
     this.currency = orderCreatedEvent.currency;
     this.orderStatus = OrderStatus.valueOf(orderCreatedEvent.orderStatus);
+    log.info(">>>OrderCreatedEvent (orderStatus: {})", orderStatus);
   }
 
   @CommandHandler
   protected void on(UpdateOrderStatusCommand updateOrderStatusCommand) {
+    log.info(">>>Apply UpdateOrderStatusCommand");
     AggregateLifecycle.apply(new OrderUpdatedEvent(updateOrderStatusCommand.orderId,
         updateOrderStatusCommand.orderStatus));
   }
@@ -55,5 +61,6 @@ public class OrderAggregate {
   protected void on(OrderUpdatedEvent orderUpdatedEvent) {
     this.orderId = orderId;
     this.orderStatus = OrderStatus.valueOf(orderUpdatedEvent.orderStatus);
+    log.info(">>>OrderUpdatedEvent (orderStatus: {})", orderStatus);
   }
 }
