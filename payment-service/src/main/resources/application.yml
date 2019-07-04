@@ -1,0 +1,18 @@
+axon:
+  axonserver:
+    servers: ${AXON_SERVERS:localhost}
+
+server:
+  port: ${PORT:8081}
+
+spring:
+  application:
+    name: payment-service
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    com.bwg.paymentservice: ${APP_LOG_LEVEL:info}
