@@ -1,4 +1,4 @@
-package com.progressivecoder.ecommerce.commands;
+package com.bwg.domains.commands;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 

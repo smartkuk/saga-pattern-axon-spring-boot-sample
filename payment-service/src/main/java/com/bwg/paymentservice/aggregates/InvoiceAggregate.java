@@ -6,8 +6,8 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import com.progressivecoder.ecommerce.commands.CreateInvoiceCommand;
-import com.progressivecoder.ecommerce.events.InvoiceCreatedEvent;
+import com.bwg.domains.commands.CreateInvoiceCommand;
+import com.bwg.domains.events.InvoiceCreatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 

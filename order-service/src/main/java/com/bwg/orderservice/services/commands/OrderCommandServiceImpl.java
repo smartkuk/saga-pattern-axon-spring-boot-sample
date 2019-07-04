@@ -1,14 +1,11 @@
 package com.bwg.orderservice.services.commands;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.stereotype.Service;
 
-import com.bwg.orderservice.aggregates.OrderStatus;
 import com.bwg.orderservice.commands.OrderCreateDTO;
-import com.progressivecoder.ecommerce.commands.CreateOrderCommand;
 
 @Service
 public class OrderCommandServiceImpl implements OrderCommandService {
@@ -28,9 +25,6 @@ public class OrderCommandServiceImpl implements OrderCommandService {
 
   @Override
   public CompletableFuture<String> createOrder(OrderCreateDTO orderCreateDTO) {
-    return commandGateway
-        .send(new CreateOrderCommand(UUID.randomUUID().toString(), orderCreateDTO.getItemType(),
-            orderCreateDTO.getPrice(), orderCreateDTO.getCurrency(),
-            String.valueOf(OrderStatus.CREATED)));
+    return commandGateway.send(orderCreateDTO.createOrderCommand());
   }
 }

@@ -1,9 +1,12 @@
-package com.progressivecoder.ecommerce.events;
+package com.bwg.domains.commands;
+
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import java.math.BigDecimal;
 
-public class OrderCreatedEvent {
+public class CreateOrderCommand {
 
+    @TargetAggregateIdentifier
     public final String orderId;
 
     public final String itemType;
@@ -14,7 +17,7 @@ public class OrderCreatedEvent {
 
     public final String orderStatus;
 
-    public OrderCreatedEvent(String orderId, String itemType, BigDecimal price, String currency, String orderStatus) {
+    public CreateOrderCommand(String orderId, String itemType, BigDecimal price, String currency, String orderStatus) {
         this.orderId = orderId;
         this.itemType = itemType;
         this.price = price;

@@ -1,4 +1,4 @@
-package com.progressivecoder.ecommerce.events;
+package com.bwg.domains.events;
 
 public class OrderUpdatedEvent {
 

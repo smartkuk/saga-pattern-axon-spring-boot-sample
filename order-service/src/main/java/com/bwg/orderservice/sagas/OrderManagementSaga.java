@@ -10,14 +10,14 @@ import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 
+import com.bwg.domains.commands.CreateInvoiceCommand;
+import com.bwg.domains.commands.CreateShippingCommand;
+import com.bwg.domains.commands.UpdateOrderStatusCommand;
+import com.bwg.domains.events.InvoiceCreatedEvent;
+import com.bwg.domains.events.OrderCreatedEvent;
+import com.bwg.domains.events.OrderShippedEvent;
+import com.bwg.domains.events.OrderUpdatedEvent;
 import com.bwg.orderservice.aggregates.OrderStatus;
-import com.progressivecoder.ecommerce.commands.CreateInvoiceCommand;
-import com.progressivecoder.ecommerce.commands.CreateShippingCommand;
-import com.progressivecoder.ecommerce.commands.UpdateOrderStatusCommand;
-import com.progressivecoder.ecommerce.events.InvoiceCreatedEvent;
-import com.progressivecoder.ecommerce.events.OrderCreatedEvent;
-import com.progressivecoder.ecommerce.events.OrderShippedEvent;
-import com.progressivecoder.ecommerce.events.OrderUpdatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
