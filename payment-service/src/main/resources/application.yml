@@ -8,6 +8,10 @@ server:
 spring:
   application:
     name: payment-service
+
+  jpa:
+    show-sql: false
+
   h2:
     console:
       enabled: true
@@ -16,3 +20,28 @@ spring:
 logging:
   level:
     com.bwg.paymentservice: ${APP_LOG_LEVEL:info}
+
+---
+
+spring:
+  profiles: postgresql
+  
+  jpa:
+    generate-ddl: true # PostgreSQL 사용시에도 axon 엔티티를 생성하도록 true 셋팅
+    database: postgresql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL82Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  # using properties of spring-cloud-config server
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  h2:
+    console:
+      enabled: false

@@ -8,6 +8,10 @@ server:
 spring:
   application:
     name: order-service
+
+  jpa:
+    show-sql: false
+
   h2:
     console:
       enabled: true
@@ -23,6 +27,7 @@ spring:
   profiles: postgresql
   
   jpa:
+    generate-ddl: true # PostgreSQL 사용시에도 axon 엔티티를 생성하도록 true 셋팅
     database: postgresql
     properties:
       hibernate:
