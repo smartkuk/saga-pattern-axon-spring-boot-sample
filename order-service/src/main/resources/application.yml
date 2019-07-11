@@ -16,3 +16,27 @@ spring:
 logging:
   level:
     com.bwg.orderservice: ${APP_LOG_LEVEL:info}
+
+---
+
+spring:
+  profiles: postgresql
+  
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL82Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  # using properties of spring-cloud-config server
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  h2:
+    console:
+      enabled: false
