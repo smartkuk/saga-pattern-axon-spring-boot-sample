@@ -5,8 +5,12 @@ import java.util.concurrent.CompletableFuture;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.stereotype.Service;
 
+import com.bwg.domains.commands.CreateOrderCommand;
 import com.bwg.orderservice.commands.OrderCreateDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class OrderCommandServiceImpl implements OrderCommandService {
 
@@ -25,6 +29,9 @@ public class OrderCommandServiceImpl implements OrderCommandService {
 
   @Override
   public CompletableFuture<String> createOrder(OrderCreateDTO orderCreateDTO) {
-    return commandGateway.send(orderCreateDTO.createOrderCommand());
+    CreateOrderCommand command = orderCreateDTO.createOrderCommand();
+    log.debug("OrderCreateDTO -> CreateOrderCommand({})", command);
+    log.debug("The CreateOrderCommand will be sent to CommandGateway.");
+    return commandGateway.send(command);
   }
 }
