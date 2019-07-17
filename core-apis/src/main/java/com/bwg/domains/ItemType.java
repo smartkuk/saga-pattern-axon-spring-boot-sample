@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ItemType {
 
-  LAPTOP("LAPTOP"), HEADPHONE("HEADPHONE"), SMARTPHONE("SMARTPHONE");
+  LAPTOP("LAPTOP"),
+  HEADPHONE("HEADPHONE"),
+  SMARTPHONE("SMARTPHONE");
 
   private String value;
 

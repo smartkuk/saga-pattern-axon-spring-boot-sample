@@ -30,4 +30,9 @@ public class Item {
   private ItemType itemType;
 
   private Boolean enabled;
+
+  public Item(ItemType itemType, Boolean enabled) {
+    this.itemType = itemType;
+    this.enabled = enabled;
+  }
 }
