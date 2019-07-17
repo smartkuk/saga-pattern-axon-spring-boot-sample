@@ -8,6 +8,7 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import com.bwg.domains.ItemType;
 import com.bwg.domains.commands.CreateOrderCommand;
 import com.bwg.domains.commands.UpdateOrderStatusCommand;
 import com.bwg.domains.events.OrderCreatedEvent;

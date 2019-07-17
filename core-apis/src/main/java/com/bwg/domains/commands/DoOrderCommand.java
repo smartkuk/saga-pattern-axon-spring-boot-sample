@@ -4,7 +4,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import com.bwg.domains.ItemType;
 
-public class CreateInvoiceCommand {
+public class DoOrderCommand {
 
   @TargetAggregateIdentifier
   public final String paymentId;
@@ -13,7 +13,7 @@ public class CreateInvoiceCommand {
 
   public final ItemType itemType;
 
-  public CreateInvoiceCommand(String paymentId, String orderId, ItemType itemType) {
+  public DoOrderCommand(String paymentId, String orderId, ItemType itemType) {
     this.paymentId = paymentId;
     this.orderId = orderId;
     this.itemType = itemType;

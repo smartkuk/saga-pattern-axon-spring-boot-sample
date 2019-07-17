@@ -10,6 +10,7 @@ import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 
+import com.bwg.domains.ItemType;
 import com.bwg.domains.commands.CreateInvoiceCommand;
 import com.bwg.domains.commands.CreateShippingCommand;
 import com.bwg.domains.commands.UpdateOrderStatusCommand;
@@ -42,9 +43,11 @@ public class OrderManagementSaga {
 
     log.debug("paymentId({})를 SAGA Lifecycle에 등록합니다.", paymentId);
 
-    CreateInvoiceCommand command = new CreateInvoiceCommand(paymentId, orderCreatedEvent.orderId);
+    CreateInvoiceCommand command =
+        new CreateInvoiceCommand(paymentId, orderCreatedEvent.orderId,
+            ItemType.valueOf(orderCreatedEvent.itemType));
 
-    log.debug("[CreateInvoiceCommand] 명령을 보냅니다.(command: {})", command);
+    log.debug("[CreateInvoiceCommand] 명령을 보냅니다.(AggregateIdentifier: {})", command.paymentId);
 
     commandGateway.send(command);
   }

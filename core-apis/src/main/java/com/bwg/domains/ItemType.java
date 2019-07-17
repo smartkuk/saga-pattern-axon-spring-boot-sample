@@ -1,4 +1,4 @@
-package com.bwg.orderservice.aggregates;
+package com.bwg.domains;
 
 import lombok.Getter;
 

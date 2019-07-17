@@ -6,8 +6,12 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import com.bwg.domains.commands.CancelOrderCommand;
 import com.bwg.domains.commands.CreateInvoiceCommand;
+import com.bwg.domains.commands.DoOrderCommand;
 import com.bwg.domains.events.InvoiceCreatedEvent;
+import com.bwg.domains.events.InvoiceToBeValidateEvent;
+import com.bwg.domains.events.OrderUpdatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,10 +30,27 @@ public class InvoiceAggregate {
 
   @CommandHandler
   public InvoiceAggregate(CreateInvoiceCommand createInvoiceCommand) {
+
     log.debug("[CreateInvoiceCommand] 명령을 받았습니다.(command: {})", createInvoiceCommand);
-    log.debug("[InvoiceCreatedEvent] 이벤트가 발생했습니다.");
+    log.debug("[InvoiceToBeValidateEvent] 이벤트가 발생했습니다.");
+
     AggregateLifecycle.apply(
-        new InvoiceCreatedEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId));
+        new InvoiceToBeValidateEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId,
+            createInvoiceCommand.itemType));
+  }
+
+  @CommandHandler
+  protected void on(DoOrderCommand doOrderCommand) {
+    log.debug("[InvoiceCreatedEvent] 이벤트가 발생했습니다.");
+    AggregateLifecycle
+        .apply(new InvoiceCreatedEvent(doOrderCommand.paymentId, doOrderCommand.orderId));
+
+  }
+
+  @CommandHandler
+  protected void on(CancelOrderCommand cancelOrderCommand) {
+    log.debug("[OrderUpdatedEvent] 이벤트가 발생했습니다.");
+    AggregateLifecycle.apply(new OrderUpdatedEvent(cancelOrderCommand.orderId, "REJECTED"));
   }
 
   @EventSourcingHandler

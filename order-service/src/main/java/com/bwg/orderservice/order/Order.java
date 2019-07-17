@@ -7,8 +7,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
+import com.bwg.domains.ItemType;
 import com.bwg.domains.events.OrderCreatedEvent;
-import com.bwg.orderservice.aggregates.ItemType;
 import com.bwg.orderservice.aggregates.OrderStatus;
 
 import lombok.AllArgsConstructor;
