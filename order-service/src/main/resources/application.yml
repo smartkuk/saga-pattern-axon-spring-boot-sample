@@ -1,3 +1,4 @@
+
 axon:
   axonserver:
     servers: ${AXON_SERVERS:localhost}
@@ -10,16 +11,21 @@ spring:
     name: order-service
 
   jpa:
+    database: h2
     show-sql: false
 
   h2:
     console:
       enabled: true
-      path: /h2-console
+      path: /h2
+
+  datasource:
+    url: jdbc:h2:mem:test
 
 logging:
   level:
     com.bwg.orderservice: ${APP_LOG_LEVEL:info}
+    org.axonframework: ${APP_LOG_LEVEL:debug}
 
 ---
 

@@ -26,7 +26,8 @@ public class InvoiceAggregate {
 
   @CommandHandler
   public InvoiceAggregate(CreateInvoiceCommand createInvoiceCommand) {
-    log.debug(">>>Apply CreateInvoiceCommand");
+    log.debug("[CreateInvoiceCommand] 명령을 받았습니다.(command: {})", createInvoiceCommand);
+    log.debug("[InvoiceCreatedEvent] 이벤트가 발생했습니다.");
     AggregateLifecycle.apply(
         new InvoiceCreatedEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId));
   }
@@ -36,6 +37,6 @@ public class InvoiceAggregate {
     this.paymentId = invoiceCreatedEvent.paymentId;
     this.orderId = invoiceCreatedEvent.orderId;
     this.invoiceStatus = InvoiceStatus.PAID;
-    log.debug(">>>InvoiceCreatedEvent (invoiceStatus: {})", invoiceStatus);
+    log.debug("[InvoiceCreatedEvent] 이벤트를 받았습니다.(event: {})", invoiceCreatedEvent);
   }
 }

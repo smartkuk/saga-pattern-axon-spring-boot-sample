@@ -32,44 +32,59 @@ public class OrderManagementSaga {
   @SagaEventHandler(associationProperty = "orderId")
   public void handle(OrderCreatedEvent orderCreatedEvent) {
 
-    log.debug(">>>Handle OrderCreatedEvent");
+    log.debug("Saga process가 [OrderCreatedEvent] 이벤트를 통해 시작 됩니다.");
+    log.debug("[OrderCreatedEvent] 이벤트를 받았습니다.(event: {})", orderCreatedEvent);
 
     String paymentId = UUID.randomUUID().toString();
 
     // associate Saga
     SagaLifecycle.associateWith("paymentId", paymentId);
 
-    log.debug(">>>Register paymentId: [{}]", paymentId);
-    log.debug(">>>OrderCreatedEvent OrderId: [{}]", orderCreatedEvent.orderId);
+    log.debug("paymentId({})를 SAGA Lifecycle에 등록합니다.", paymentId);
 
-    // send the commands
-    commandGateway.send(new CreateInvoiceCommand(paymentId, orderCreatedEvent.orderId));
+    CreateInvoiceCommand command = new CreateInvoiceCommand(paymentId, orderCreatedEvent.orderId);
+
+    log.debug("[CreateInvoiceCommand] 명령을 보냅니다.(command: {})", command);
+
+    commandGateway.send(command);
   }
 
   @SagaEventHandler(associationProperty = "paymentId")
   public void handle(InvoiceCreatedEvent invoiceCreatedEvent) {
+
+    log.debug("[InvoiceCreatedEvent] 이벤트를 받았습니다.(event: {})", invoiceCreatedEvent);
+
     String shippingId = UUID.randomUUID().toString();
 
-    System.out.println("Saga continued");
-
-    // associate Saga with shipping
     SagaLifecycle.associateWith("shipping", shippingId);
 
-    // send the create shipping command
-    commandGateway.send(new CreateShippingCommand(shippingId, invoiceCreatedEvent.orderId,
-        invoiceCreatedEvent.paymentId));
+    log.debug("shippingId({})를 SAGA Lifecycle에 등록합니다.", shippingId);
+
+    CreateShippingCommand command =
+        new CreateShippingCommand(shippingId, invoiceCreatedEvent.orderId,
+            invoiceCreatedEvent.paymentId);
+
+    log.debug("[CreateShippingCommand] 명령을 보냅니다.(command: {})", command);
+
+    commandGateway.send(command);
   }
 
   @SagaEventHandler(associationProperty = "orderId")
   public void handle(OrderShippedEvent orderShippedEvent) {
-    log.debug(">>>Handle OrderShippedEvent");
-    commandGateway.send(new UpdateOrderStatusCommand(orderShippedEvent.orderId,
-        String.valueOf(OrderStatus.SHIPPED)));
+
+    log.debug("[OrderShippedEvent] 이벤트를 받았습니다.(event: {})", orderShippedEvent);
+
+    UpdateOrderStatusCommand command = new UpdateOrderStatusCommand(orderShippedEvent.orderId,
+        String.valueOf(OrderStatus.SHIPPED));
+
+    log.debug("[CreateShippingCommand] 명령을 보냅니다.(command: {})", command);
+
+    commandGateway.send(command);
   }
 
   @SagaEventHandler(associationProperty = "orderId")
   public void handle(OrderUpdatedEvent orderUpdatedEvent) {
+    log.debug("Saga process가 [OrderUpdatedEvent] 이벤트를 통해 종료 됩니다.");
     SagaLifecycle.end();
-    log.debug(">>>Handle OrderUpdatedEvent (Saga Lifecycle End)");
   }
 }

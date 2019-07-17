@@ -26,15 +26,16 @@ public class ShippingAggregate {
 
   @CommandHandler
   public ShippingAggregate(CreateShippingCommand createShippingCommand) {
-    log.debug(">>>Apply CreateShippingCommand");
+    log.debug("[CreateShippingCommand] 명령을 받았습니다.(command: {})", createShippingCommand);
+    log.debug("[OrderShippedEvent] 이벤트가 발생했습니다.");
     AggregateLifecycle.apply(new OrderShippedEvent(createShippingCommand.shippingId,
         createShippingCommand.orderId, createShippingCommand.paymentId));
   }
 
   @EventSourcingHandler
   protected void on(OrderShippedEvent orderShippedEvent) {
-    log.debug(">>>OrderShippedEvent");
     this.shippingId = orderShippedEvent.shippingId;
     this.orderId = orderShippedEvent.orderId;
+    log.debug("[OrderShippedEvent] 이벤트를 받았습니다.(event: {})", orderShippedEvent);
   }
 }

@@ -13,10 +13,12 @@ import com.bwg.domains.commands.UpdateOrderStatusCommand;
 import com.bwg.domains.events.OrderCreatedEvent;
 import com.bwg.domains.events.OrderUpdatedEvent;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Aggregate
+@Getter
 public class OrderAggregate {
 
   @AggregateIdentifier
@@ -34,7 +36,8 @@ public class OrderAggregate {
 
   @CommandHandler
   public OrderAggregate(CreateOrderCommand createOrderCommand) {
-    log.debug(">>>Apply CreateOrderCommand");
+    log.debug("[CreateOrderCommand] 명령을 받았습니다.(command: {})", createOrderCommand);
+    log.debug("[OrderCreatedEvent] 이벤트가 발생했습니다.");
     AggregateLifecycle
         .apply(new OrderCreatedEvent(createOrderCommand.orderId, createOrderCommand.itemType,
             createOrderCommand.price, createOrderCommand.currency, createOrderCommand.orderStatus));
@@ -47,12 +50,13 @@ public class OrderAggregate {
     this.price = orderCreatedEvent.price;
     this.currency = orderCreatedEvent.currency;
     this.orderStatus = OrderStatus.valueOf(orderCreatedEvent.orderStatus);
-    log.debug(">>>OrderCreatedEvent (orderStatus: {})", orderStatus);
+    log.debug("[OrderCreatedEvent] 이벤트를 받았습니다.(event: {})", orderCreatedEvent);
   }
 
   @CommandHandler
   protected void on(UpdateOrderStatusCommand updateOrderStatusCommand) {
-    log.debug(">>>Apply UpdateOrderStatusCommand");
+    log.debug("[UpdateOrderStatusCommand] 명령을 받았습니다.");
+    log.debug("[OrderUpdatedEvent] 이벤트가 발생했습니다.");
     AggregateLifecycle.apply(new OrderUpdatedEvent(updateOrderStatusCommand.orderId,
         updateOrderStatusCommand.orderStatus));
   }
@@ -61,6 +65,6 @@ public class OrderAggregate {
   protected void on(OrderUpdatedEvent orderUpdatedEvent) {
     this.orderId = orderId;
     this.orderStatus = OrderStatus.valueOf(orderUpdatedEvent.orderStatus);
-    log.debug(">>>OrderUpdatedEvent (orderStatus: {})", orderStatus);
+    log.debug("[OrderUpdatedEvent] 이벤트를 받았습니다.(event: {})", orderUpdatedEvent);
   }
 }

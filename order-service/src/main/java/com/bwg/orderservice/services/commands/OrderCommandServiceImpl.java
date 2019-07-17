@@ -30,8 +30,7 @@ public class OrderCommandServiceImpl implements OrderCommandService {
   @Override
   public CompletableFuture<String> createOrder(OrderCreateDTO orderCreateDTO) {
     CreateOrderCommand command = orderCreateDTO.createOrderCommand();
-    log.debug("OrderCreateDTO -> CreateOrderCommand({})", command);
-    log.debug("The CreateOrderCommand will be sent to CommandGateway.");
+    log.debug("[CreateOrderCommand] 명령을 보냅니다.(command: {})", command);
     return commandGateway.send(command);
   }
 }
