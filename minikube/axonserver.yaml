@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: axonserver
+  labels:
+    app.kubernetes.io/name: axon
+    app.kubernetes.io/instance: axon
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+    app: axonserver
+spec:
+  serviceName: axonserver
+  replicas: 1
+  selector:
+    matchLabels:
+      app: axonserver
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: axon
+        app.kubernetes.io/instance: axon
+        app.kubernetes.io/version: 0.1.0
+        app.kubernetes.io/component: test
+        app.kubernetes.io/part-of: bxm-cloud
+        bxm.io/corporation: bwg
+        app: axonserver
+    spec:
+      containers:
+      - name: axonserver
+        image: axoniq/axonserver
+        imagePullPolicy: Always
+        ports:
+          - name: grpc
+            containerPort: 8124
+            protocol: TCP
+          - name: gui
+            containerPort: 8024
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            port: 8024
+            path: /actuator/health
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+        env:
+          - name: AXONSERVER_HOSTNAME
+            value: axonserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axonserver-gui
+  labels:
+    app.kubernetes.io/name: axon
+    app.kubernetes.io/instance: axon
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+    app: axonserver-gui
+spec:
+  type: LoadBalancer
+  ports:
+    - name: gui
+      port: 8024
+      targetPort: 8024
+  selector:
+    app: axonserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axonserver
+  labels:
+    app.kubernetes.io/name: axon
+    app.kubernetes.io/instance: axon
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+    app: axonserver
+spec:
+  clusterIP: None
+  ports:
+    - name: grpc
+      port: 8124
+      targetPort: 8124
+  selector:
+    app: axonserver

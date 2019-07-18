@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: repository
+    app.kubernetes.io/instance: repository
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: properties
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+  name: repository
+data:
+  order.database.db: order
+  order.database.url: jdbc:postgresql://order-repository:5432/order
+  payment.database.db: payment
+  payment.database.url: jdbc:postgresql://payment-repository:5432/payment
+  shipping.database.db: shipping
+  shipping.database.url: jdbc:postgresql://shipping-repository:5432/shipping

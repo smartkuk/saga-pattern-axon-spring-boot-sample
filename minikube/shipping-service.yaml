@@ -1,0 +1,100 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: shipping-service
+    app.kubernetes.io/instance: shipping-service
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+  name: shipping-service
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: shipping_svc_mapping
+      prefix: /saga/shipping/
+      service: shipping-service.default
+      add_request_headers:
+        yourname: smartkuk
+      circuit_breakers:
+      - priority: default
+        max_connections: 2
+        max_pending_requests: 1
+        max_requests: 1
+        max_retries: 1
+      # 작업중
+      cors:
+        origins: "*"
+        methods: "*"
+      # 작업중
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8082
+  selector:
+    app.kubernetes.io/name: shipping-service
+    app.kubernetes.io/component: test
+    bxm.io/corporation: bwg
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: shipping-service
+    app.kubernetes.io/instance: shipping-service
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+  name: shipping-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shipping-service
+      app.kubernetes.io/component: test
+      bxm.io/corporation: bwg
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shipping-service
+        app.kubernetes.io/instance: shipping-service
+        app.kubernetes.io/version: 0.1.0
+        app.kubernetes.io/component: test
+        app.kubernetes.io/part-of: bxm-cloud
+        bxm.io/corporation: bwg
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: saga-pattern-shipping-service
+          image: docker.io/smartkuk/shipping-service:latest
+          args:
+            - "--spring.profiles.active=postgresql"
+          ports:
+            - name: http
+              containerPort: 8082
+          env:
+            - name: "AXON_SERVERS"
+              value: "axonserver.default"
+            - name: "APP_LOG_LEVEL"
+              value: "debug"
+            - name: "DB_URL"
+              valueFrom:
+                configMapKeyRef:
+                  name: repository
+                  key: shipping.database.url
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: shipping-secret
+                  key: username
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: shipping-secret
+                  key: password
