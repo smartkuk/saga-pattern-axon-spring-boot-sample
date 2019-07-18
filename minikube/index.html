@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+    <title>Hello HTML</title>
+  </head>
+  <body>
+    <div class="container">
+      <br>
+      <div class="row">
+        <div class="col-1"></div>
+        <!-- 메인화면 START -->
+        <div class="col">
+          <!-- 상단 TAB START -->
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" id="seminar-tab" data-toggle="tab" href="#seminar" role="tab" aria-controls="seminar" aria-selected="true">세미나 / 데모</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false">미정</a>
+            </li>
+          </ul>
+          <!-- 상단 TAB FINISH -->
+
+          <div class="tab-content" id="myTabContent">
+            <br>
+            
+            <!-- 세미나 / 데모 TAB 화면 START -->
+            <div class="tab-pane fade show active" id="seminar" role="tabpanel" aria-labelledby="seminar-tab">
+              
+              <h5>Inventories</h5>
+              <div class="form-group">
+                <label for="txt-payment-url">Payment Service URL</label>
+                <input type="text" class="form-control" id="txt-payment-url" name="txtPaymentUrl" value="http://localhost:8081"/>
+              </div>
+
+              <div class="text-right">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-laptop" onclick="postItem('LAPTOP');">LAPTOP &#8593;</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-headphone" onclick="postItem('HEADPHONE');">HEADPHONE &#8593;</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-smartphone" onclick="postItem('SMARTPHONE');">SMARTPHONE &#8593;</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-inventory-refresh" onclick="toggleRefreshForInventory();">갱신 시작</button>
+              </div>
+              
+              <table class="table" id="inventory_table" data-toggle="table"> 
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" data-field="itemType" data-cell-style="inventoryItemTypeCell">Item Type</th>
+                    <th scope="col" data-field="numberOfItems">전체</th>
+                    <th scope="col" data-field="numberOfEnabledItems">사용가능</th>
+                    <th scope="col" data-field="numberOfDisabledItems">사용불가</th>
+                  </tr>
+                </thead>
+              </table>
+
+              <hr>
+
+              <h5>Customer Orders</h5>
+              <div class="form-group">
+                <label for="txt-order-url">Order Service URL</label>
+                <input type="text" class="form-control" id="txt-order-url" name="txtOrderUrl" value="http://localhost:8080"/>
+              </div>
+
+              <div class="text-right">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-customer-order-refresh" onclick="toggleRefreshForCustomerOrder();">갱신 시작</button>
+              </div>
+              
+              <table class="table" id="customer_order_table" data-toggle="table"> 
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" data-field="itemType">Item Type</th>
+                    <th scope="col" data-field="price">금액</th>
+                    <th scope="col" data-field="currency">통화</th>
+                    <th scope="col" data-field="orderStatus" data-cell-style="orderStatusCell">상태</th>
+                    <th scope="col" data-field="createdDate">주문일시</th>
+                  </tr>
+                </thead>
+              </table>
+
+            </div>
+            <!-- 세미나 / 데모 TAB 화면 FINISH -->
+            
+            <!-- 미정 TAB 화면 START -->
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <button type="button" class="btn btn-primary" onclick="sendRequest('http://localhost:8080/host');" >host</button>
+              <div class="form-group">
+                <textarea class="form-control" aria-label="With textarea" id="response"></textarea>
+              </div>
+            </div>
+            <!-- 미정 TAB 화면 FINISH -->
+
+          </div>
+        </div>
+        <!-- 메인화면 FINISH -->
+        <div class="col-1"></div>
+      </div>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-ko-KR.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+
+    <script>
+
+      var autoRefreshInventories = false;
+      var autoRefreshCustomerOrders = false;
+      
+      var refreshInventoryInterval;
+      var refreshCustomerOrderInterval;
+
+      function sendRequest(destination) {
+        $.get(destination, function (data) {
+          console.log(destination, ":\n", data);
+          var pretty = JSON.stringify(data, null, 2);
+          var rows = pretty.split("\n").length;
+          $('#response').text(pretty);
+          $('#response').attr('rows', rows);
+        });
+      }
+
+      // 재고현황 데이터를 주기적으로 조회하거나 종료
+      function toggleRefreshForInventory() {
+        autoRefreshInventories = !autoRefreshInventories;
+        if (autoRefreshInventories) {
+          $('#btn-inventory-refresh').html('갱신 중지');
+          console.log('Start interval loading.');
+          refreshInventoryInterval = setInterval(loadInventories, 3000);
+        } else {
+          $('#btn-inventory-refresh').html('갱신 시작');
+          console.log('Stop interval loading.');
+          clearInterval(refreshInventoryInterval);
+        }
+      }
+
+      // 고객주문 데이터를 주기적으로 조회하거나 종료
+      function toggleRefreshForCustomerOrder() {
+        autoRefreshCustomerOrders = !autoRefreshCustomerOrders;
+        if (autoRefreshCustomerOrders) {
+          $('#btn-customer-order-refresh').html('갱신 중지');
+          console.log('Start interval loading.');
+          refreshCustomerOrderInterval = setInterval(loadCustomerOrders, 3000);
+        } else {
+          $('#btn-customer-order-refresh').html('갱신 시작');
+          console.log('Stop interval loading.');
+          clearInterval(refreshCustomerOrderInterval);
+        }
+      }
+
+      // 재고를 아이템 유형에 의해 1개 생성
+      function postItem(itemType) {
+        console.log('load items by item type');
+        let requestUrl = $("#txt-payment-url").val() + '/items/' + itemType + '/1';
+        $.ajax({
+          type: "POST",
+          url: requestUrl,
+          headers : {
+            'Access-Control-Allow-Origin' : '*'
+          },
+          success: function(response) {
+            console.log('Loaded', itemType, 'item.');
+          },
+          error: function (e) { 
+            console.log('Fail to get', e);
+          }
+        });
+      }
+
+      // payment-service에 접근하여 재고를 조회하고 결과를 테이블에 작성
+      function loadInventories() {
+        console.log('loading inventories');
+        let requestUrl = $("#txt-payment-url").val() + '/inventories';
+        $.ajax({
+          type: "GET",
+          url: requestUrl,
+          headers : {
+            'Access-Control-Allow-Origin' : '*'
+          },
+          success: function(response) {
+            $('#inventory_table').bootstrapTable('load', response);
+          },
+          error: function (e) { 
+            console.log('Fail to get', e);
+          }
+        });
+      }
+
+      // order-service 접근하여 고객 주문을 조회하고 결과를 테이블에 작성
+      function loadCustomerOrders() {
+        console.log('loading customer orders');
+        let requestUrl = $("#txt-order-url").val() + '/customerOrders?sort=createdDate,desc';
+        $.ajax({
+          type: "GET",
+          url: requestUrl,
+          headers : {
+            'Access-Control-Allow-Origin' : '*'
+          },
+          success: function(response) {
+            $('#customer_order_table').bootstrapTable('load', response._embedded.customerOrders);
+          },
+          error: function (e) { 
+            console.log('Fail to get', e);
+          }
+        });
+      }
+
+      // 재고현황 갯수에 따라서 CELL 스타일을 조정
+      function inventoryItemTypeCell(value, row, index) {
+
+        if (row.numberOfItems == row.numberOfDisabledItems) {
+          return {
+            classes: 'text-danger font-weight-bold'
+          };
+        }
+
+        if (row.numberOfEnabledItems > 0) {
+          return {
+            classes: 'text-success'
+          };
+        }
+
+        return {};
+      }
+
+      // 재고현황 갯수에 따라서 CELL 스타일을 조정
+      function orderStatusCell(value, row, index) {
+        return value == 'SHIPPED' ? { classes: 'text-success' } : { classes: 'text-danger font-weight-bold' }
+      }
+
+    </script>
+  </body>
+</html>
+<!--
+  kubectl proxy
+  http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+-->

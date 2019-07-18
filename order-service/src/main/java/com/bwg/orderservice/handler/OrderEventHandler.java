@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import com.bwg.domains.events.OrderCreatedEvent;
 import com.bwg.domains.events.OrderUpdatedEvent;
 import com.bwg.orderservice.aggregates.OrderStatus;
-import com.bwg.orderservice.order.Order;
-import com.bwg.orderservice.order.OrderRepository;
+import com.bwg.orderservice.order.CustomerOrder;
+import com.bwg.orderservice.order.CustomerOrderRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,12 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderEventHandler {
 
   @Autowired
-  private OrderRepository repository;
+  private CustomerOrderRepository repository;
 
   @EventHandler
   protected void on(OrderCreatedEvent orderCreatedEvent) {
     log.debug("[OrderCreatedEvent] 이벤트를 받았습니다.(event: {})", orderCreatedEvent);
-    Order order = repository.save(new Order(orderCreatedEvent));
+    CustomerOrder order = repository.save(new CustomerOrder(orderCreatedEvent));
     log.debug("새로운 [Order] Entity를 저장했습니다.", order);
   }
 

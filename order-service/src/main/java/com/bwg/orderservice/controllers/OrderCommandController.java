@@ -12,9 +12,7 @@ import com.bwg.orderservice.services.commands.OrderCommandService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping(value = "/api/orders")
 @Api(value = "Order Commands", description = "Order Commands Related Endpoints",

@@ -1,6 +1,7 @@
 package com.bwg.orderservice.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,13 +18,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "`order`")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Order {
+public class CustomerOrder {
 
   @Id
   private String id;
@@ -38,11 +39,14 @@ public class Order {
   @Enumerated(EnumType.STRING)
   private OrderStatus orderStatus;
 
-  public Order(OrderCreatedEvent orderCreatedEvent) {
+  private LocalDateTime createdDate;
+
+  public CustomerOrder(OrderCreatedEvent orderCreatedEvent) {
     id = orderCreatedEvent.orderId;
     itemType = ItemType.valueOf(orderCreatedEvent.itemType);
     price = orderCreatedEvent.price;
     currency = orderCreatedEvent.currency;
     orderStatus = OrderStatus.valueOf(orderCreatedEvent.orderStatus);
+    createdDate = LocalDateTime.now();
   }
 }
