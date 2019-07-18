@@ -2,6 +2,7 @@ package com.bwg.orderservice.controllers;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping(value = "/api/orders")
 @Api(value = "Order Commands", description = "Order Commands Related Endpoints",
     tags = "Order Commands")

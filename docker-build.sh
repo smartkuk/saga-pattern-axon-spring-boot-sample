@@ -1,6 +1,11 @@
 
 DOCKER_REPO=$1
 
+if [ -z $DOCKER_REPO ]; then
+  echo "You must input docker hub repository name."
+  exit 1;
+fi
+
 ./mvnw clean package install;
 
 ROOT_DIR=`pwd`

@@ -36,29 +36,34 @@
 
 ### Build
 
-* 프로젝트 ROOT 경로에서 다음의 커맨드를 사용하면 프로젝트를 빌드하고 내부 저장소에 저장한다.
-
-  ```shell
-  $ ./mvnw clean package install;
-  ```
-
 * 각각의 프로젝트로 이동하여 다음의 커맨드를 사용해서 로컬환경에 도커 이미지를 만들고 올린다.
 
   ```shell
-  $ docker-build.sh
+  $ docker-build.sh <<자기 docker hub 저장소 이름>>
   ```
 
-위에 커맨드는 각각의 프로젝트(order-service, payment-service, shipping-service)로 이동해서 로커 빌드를 실행하도록 만들어놓은 쉘스크립트이다.
+위에 커맨드는 각각의 프로젝트(core-apis, order-service, payment-service, shipping-service)를 빌드하고 내부 저장소에 설치(install)후 각각 도커 빌드를 실행하고 도커 이미지를 파라미터로 받은 docker hub 저장소에 push 처리를 하는 쉘스크립트이다.
 
-로컬환경에서 만들어 놓은 이미지를 docker hub로 업로드 하기 전에 프로젝트별로 maven pom.xml 내부에 ```<docker.image.prefix>본인의dockerhub이름</docker.image.prefix>``` 부분을 변경해야 하고 docker login 된 상태이어야 동작하니 주의한다.
+---
 
-* 위에 과정을 마쳤다면 다음과 같이 docker hub에 이미지를 올린다.
+### minikube
 
-  ```shell
-  $ docker push smartkuk/payment-service:latest;
-  $ docker push smartkuk/order-service:latest;
-  $ docker push smartkuk/shipping-service:latest;
-  ```
+쿠버네티스의 minikube 환경에서 테스트를 진행할 수 있도록 ```/minikube``` 경로에 yaml 파일들이 있다.
+
+|파일명|설명|
+|:---|:---|
+|axonserver.yaml|axon server를 내려받으면 안에 포함된 파일, axon server를 쿠버네티스에서 기동할 수 있는 내용|
+|*-service.yaml|각각의 애플리케이션을 Deployment 리소스를 사용해서 생성하며, DB 정보는 Secret을 통해서 읽고 그외에 정보는 ConfigMap 리소스를 통해서 읽는다.|
+|*-repository.yaml|Postgresql을 구동하는 Deployment yaml 이다. 테스트 목적 혹은 시연을 목적으로 했기 때문에 StatefulSet으로 하지 않았다.|
+|postgresql-pvc.yaml|PostgreSQL 구동시 PersistentVolumeClaim을 사용해서 리소스 할당|
+|repository-configmap.yaml|PostgreSQL 공통 변수를 담을 ConfigMap 리소스|
+|repository-secrets.yaml|PostgrelSQL 인증 관련 정보를 담을 Secret 리소스|
+
+### index.html
+
+테스트 또는 동작 확인을 위해 간단한 페이지를 만들었다. 상단 부분에서 각각 상품별 재고를 생성하며, 맨 밑에 부분에서 해당 상품을 구입하는 유스케이스로 보면 된다.
+
+![테스트용 화면 이미지](./minikube/images/index.png "테스트용 화면")
 
 ---
 
