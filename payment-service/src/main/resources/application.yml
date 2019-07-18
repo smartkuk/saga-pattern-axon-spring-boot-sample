@@ -25,6 +25,7 @@ spring:
 logging:
   level:
     com.bwg.paymentservice: ${APP_LOG_LEVEL:info}
+    org.axonframework: ${AXON_LOG_LEVEL:error}
 
 ---
 

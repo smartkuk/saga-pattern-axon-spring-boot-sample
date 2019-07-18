@@ -5,7 +5,7 @@
 
 ### Axon server dependency
 
-프로젝트를 로컬 환경에서 실행하여 테스트를 하려면 로컬 환경에 [Axon server]를 기동해야 한다. 다운로드를 받아서 사용할 것을 권하며, ```fork한 프로젝트에는 내가 order-service/axon-server 하위에 jar 옮겨놨으니 그냥 사용도 가능하다.```
+프로젝트를 로컬 환경에서 실행하여 테스트를 하려면 로컬 환경에 [Axon server]를 기동해야 한다. 다운로드를 받아서 사용할 것을 권함
 
 * Axon 관련 zip 파일을 다운로드 받아 압축을 해제하고, axonserver-4.1.2.jar 파일을 실행하면 아래와 같이 기동하는 것을 확인 할 수 있다.
 
@@ -31,6 +31,34 @@
 ### SAGA Pattern project start
 
 위에서 Axon server를 실행한 뒤에 order-service, payment-service, shipping-service 스프링부트 프로젝트를 실행하면 Axon server 기반의 SAGA 패턴 구현 처리과정을 테스트 할 수 있다.
+
+---
+
+### Build
+
+* 프로젝트 ROOT 경로에서 다음의 커맨드를 사용하면 프로젝트를 빌드하고 내부 저장소에 저장한다.
+
+  ```shell
+  $ ./mvnw clean package install;
+  ```
+
+* 각각의 프로젝트로 이동하여 다음의 커맨드를 사용해서 로컬환경에 도커 이미지를 만들고 올린다.
+
+  ```shell
+  $ docker-build.sh
+  ```
+
+위에 커맨드는 각각의 프로젝트(order-service, payment-service, shipping-service)로 이동해서 로커 빌드를 실행하도록 만들어놓은 쉘스크립트이다.
+
+로컬환경에서 만들어 놓은 이미지를 docker hub로 업로드 하기 전에 프로젝트별로 maven pom.xml 내부에 ```<docker.image.prefix>본인의dockerhub이름</docker.image.prefix>``` 부분을 변경해야 하고 docker login 된 상태이어야 동작하니 주의한다.
+
+* 위에 과정을 마쳤다면 다음과 같이 docker hub에 이미지를 올린다.
+
+  ```shell
+  $ docker push smartkuk/payment-service:latest;
+  $ docker push smartkuk/order-service:latest;
+  $ docker push smartkuk/shipping-service:latest;
+  ```
 
 ---
 

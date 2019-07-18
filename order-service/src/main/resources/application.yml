@@ -25,7 +25,7 @@ spring:
 logging:
   level:
     com.bwg.orderservice: ${APP_LOG_LEVEL:info}
-    org.axonframework: ${APP_LOG_LEVEL:info}
+    org.axonframework: ${AXON_LOG_LEVEL:error}
 
 ---
 

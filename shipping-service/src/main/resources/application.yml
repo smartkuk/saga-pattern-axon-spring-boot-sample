@@ -25,6 +25,7 @@ spring:
 logging:
   level:
     com.bwg.shippingservice: ${APP_LOG_LEVEL:info}
+    org.axonframework: ${AXON_LOG_LEVEL:error}
 
 ---
 
