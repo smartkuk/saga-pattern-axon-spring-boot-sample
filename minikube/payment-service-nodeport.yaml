@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/instance: payment-service
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+  name: payment-service
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: payment_svc_mapping
+      prefix: /saga/payment/
+      service: payment-service.default
+      add_request_headers:
+        yourname: smartkuk
+      circuit_breakers:
+      - priority: default
+        max_connections: 2
+        max_pending_requests: 1
+        max_requests: 1
+        max_retries: 1
+      # 작업중
+      cors:
+        origins: "*"
+        methods: "*"
+      # 작업중
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8081
+  selector:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/component: test
+    bxm.io/corporation: bwg
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/instance: payment-service
+    app.kubernetes.io/version: 0.1.0
+    app.kubernetes.io/component: test
+    app.kubernetes.io/part-of: bxm-cloud
+    bxm.io/corporation: bwg
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: payment-service
+      app.kubernetes.io/component: test
+      bxm.io/corporation: bwg
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: payment-service
+        app.kubernetes.io/instance: payment-service
+        app.kubernetes.io/version: 0.1.0
+        app.kubernetes.io/component: test
+        app.kubernetes.io/part-of: bxm-cloud
+        bxm.io/corporation: bwg
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: saga-pattern-payment-service
+          image: docker.io/smartkuk/payment-service:latest
+          args:
+            - "--spring.profiles.active=postgresql"
+          ports:
+            - name: http
+              containerPort: 8081
+          env:
+            - name: "AXON_SERVERS"
+              value: "axonserver.default"
+            - name: "APP_LOG_LEVEL"
+              value: "debug"
+            - name: "DB_URL"
+              valueFrom:
+                configMapKeyRef:
+                  name: repository
+                  key: payment.database.url
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: payment-secret
+                  key: username
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: payment-secret
+                  key: password

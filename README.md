@@ -59,6 +59,46 @@
 |repository-configmap.yaml|PostgreSQL 공통 변수를 담을 ConfigMap 리소스|
 |repository-secrets.yaml|PostgrelSQL 인증 관련 정보를 담을 Secret 리소스|
 
+### operating
+
+minikube 환경 기준으로 적용 순서는 다음과 같다.
+
+```shell
+$ kubectl apply -f ./axonserver.yaml
+$ kubectl apply -f ./postgresql-pvc.yaml
+$ kubectl apply -f ./order-repository.yaml
+$ kubectl apply -f ./order-service-nodeport.yaml
+$ kubectl apply -f ./payment-repository.yaml
+$ kubectl apply -f ./payment-service-nodeport.yaml
+$ kubectl apply -f ./repository-configmap.yaml
+$ kubectl apply -f ./repository-secrets.yaml
+$ kubectl apply -f ./shipping-repository.yaml
+$ kubectl apply -f ./shipping-service.yaml
+```
+
+위와 같이 적용을 하면 웹 페이지로 확인이 가능하다. 아래와 같이 서비스 목록을 리스팅 하고 order-service 우측에 보이는 URL을 사용해서 브라우저로 접속한다. 위에 파일에 *-nodeport.yaml 로 서비스를 적용해야 로컬환경에서 기동한 브라우저로 연결되니 주의한다.
+
+```shell
+$ minikube service list
+|-------------|---------------------|-----------------------------|
+|  NAMESPACE  |        NAME         |             URL             |
+|-------------|---------------------|-----------------------------|
+| default     | axonserver          | No node port                |
+| default     | axonserver-gui      | http://192.168.99.100:30350 |
+| default     | kubernetes          | No node port                |
+| default     | order-repository    | No node port                |
+| default     | order-service       | http://192.168.99.100:30962 |
+| default     | payment-repository  | No node port                |
+| default     | payment-service     | http://192.168.99.100:30797 |
+| default     | shipping-repository | No node port                |
+| default     | shipping-service    | No node port                |
+| kube-system | kube-dns            | No node port                |
+| kube-system | metrics-server      | No node port                |
+|-------------|---------------------|-----------------------------|
+```
+
+![노드 포트로 개방된 서버를 설정하는 화면 이미지](./minikube/images/endpoint-configuration.png "노드 포트로 개방된 서버를 설정하는 화면")
+
 ### index.html
 
 테스트 또는 동작 확인을 위해 간단한 페이지를 만들었다. 상단 부분에서 각각 상품별 재고를 생성하며, 맨 밑에 부분에서 해당 상품을 구입하는 유스케이스로 보면 된다.
