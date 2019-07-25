@@ -28,21 +28,117 @@
 
 ---
 
-### SAGA Pattern project start
+### 추가(변경)된 내용
 
-위에서 Axon server를 실행한 뒤에 order-service, payment-service, shipping-service 스프링부트 프로젝트를 실행하면 Axon server 기반의 SAGA 패턴 구현 처리과정을 테스트 할 수 있다.
+* Docker 이미지 빌드 및 PUSH 처리를 [```io.fabric8/docker-maven-plugin```](http://dmp.fabric8.io/#introduction)로 변경하였다.
+* 기존의 maven multi modules 설정에서 자식 모듈이 parent 태그를 통해서 지정하는 부모 프로젝트가 잘 못 되어있었기 때문에 그 부분도 수정을 했다.(변경 내역을 참조)
+* io.fabric8/docker-maven-plugin 플러그인과 관련된 pom.xml 내용에는 주석을 추가했다.
 
 ---
 
-### Build
+### 이전 형태의 프로젝트 사용
 
-* 각각의 프로젝트로 이동하여 다음의 커맨드를 사용해서 로컬환경에 도커 이미지를 만들고 올린다.
+다음과 같이 clone 받은 프로젝트 루트에서 checkout 커맨드로 변경하고 사용한다.
 
   ```shell
-  $ docker-build.sh <<자기 docker hub 저장소 이름>>
+  $ git checkout tags/v0.1
   ```
 
-위에 커맨드는 각각의 프로젝트(core-apis, order-service, payment-service, shipping-service)를 빌드하고 내부 저장소에 설치(install)후 각각 도커 빌드를 실행하고 도커 이미지를 파라미터로 받은 docker hub 저장소에 push 처리를 하는 쉘스크립트이다.
+---
+
+### Maven settings.xml 설정
+
+```io.fabric8/docker-maven-plugin``` 플러그인을 통해서 hub.docker.io 공개 도메인 저장소에 PUSH 처리가 되기 때문에 이 ```사이트를 접근 할 수 있는 인증 정보를 셋팅```해야한다. maven 설정에 인증 정보를 셋팅하는 방식이 여러 가지가 있는데 필자는 가장 간단한 설정으로 처리를 해놓았다.
+
+* Maven wrapper version 확인
+
+  프로젝트를 clone 받은 경로에서 maven wrapper 버전을 확인한다. wrapper가 설치된 경로에 위치한 설정 파일을 수정하여 인증을 할 것이다. 아래는 필자의 환경을 출력해본 예시이다.
+
+  ```shell
+  $ ./mvnw --version
+  Apache Maven 3.6.1 (d66c9c0b3152b2e69ee9bac180bb8fcc8e6af555; 2019-04-05T04:00:29+09:00)
+  Maven home: /Users/smartkuk/.m2/wrapper/dists/apache-maven-3.6.1-bin/38pn40mp89t5c94bjdbeod370m/apache-maven-3.6.1
+  Java version: 1.8.0_191, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/jre
+  Default locale: en_KR, platform encoding: UTF-8
+  OS name: "mac os x", version: "10.14.5", arch: "x86_64", family: "mac"
+  ```
+
+* Change directory into configration directory of maven wrapper
+
+  ```shell
+  $ cd /Users/smartkuk/.m2/wrapper/dists/apache-maven-3.6.1-bin/38pn40mp89t5c94bjdbeod370m/apache-maven-3.6.1/conf
+  $ vi ./settings.xml
+  ```
+
+* Add authentication into settings.xml
+
+  vi 편집기로 내용을 열고 다음의 내용을 추가한다. 추가를 완료하면 docker push 처리까지 할 수 있는 상태가 된다.
+
+  ```xml
+  <servers>
+    <server>
+      <id>docker.io</id>
+      <username>자신의 hub.docker.io 로그인 ID</username>
+      <password>자신의 hub.docker.io 로그인 PASSWORD</password>
+    </server>
+  </servers>
+  ```
+
+---
+
+### SAGA Pattern project start
+
+위에서 Axon server를 실행한 뒤에 order-service, payment-service, shipping-service 스프링부트 프로젝트를 실행하면 Axon server 기반의 SAGA 패턴 구현 처리과정을 테스트 할 수 있다. 이클립스에 STS 플러그인을 사용할 것을 추천(편함)한다.
+
+---
+
+### Build project then docker build and push
+
+커맨드를 한번 실행해서 스프링 애플리케이션의 빌드, docker build, docker push 처리를 모두 할 수 있다.
+
+* ***```소스 빌드, 패키징, 도커 빌드 및 푸시```***
+
+  clone 받은 프로젝트의 루트에서 실행하면 모두 빌드하고 도커 빌드 및 hub.docker.io push 까지 실행한다.
+
+  ```shell
+  $ ./mvnw clean package install docker:build docker:push
+  ```
+
+* 일반 spring 프로젝트 빌드
+
+  단순히 빌드만 하는 행위는 위와 같이 실행
+
+  ```shell
+  $ ./mvnw clean package
+  ```
+
+* 도커 빌드 또는 푸시
+
+  도커 빌드 혹은 푸시 처리는 각각 할수 있고 열거하면 같이 할 수 있다.
+
+  ```shell
+  # 같이 처리
+  $ ./mvnw docker:build docker:push
+  ```
+
+  ```shell
+  # 빌드만
+  $ ./mvnw docker:build
+  ```
+
+  ```shell
+  # 푸시만
+  $ ./mvnw docker:push
+  ```
+
+* 특정 프로젝트만 선택하여 처리
+
+  메이븐 커맨드를 통해서 특정 프로젝트에 대한 처리를 다음과 같이 할 수 있다.
+
+  ```shell
+  # order-service 프로젝트만 빌드, 패키징, 도커 빌드 및 푸시 처리
+  $ ./mvnw -pl order-service clean package install docker:build docker:push
+  ```
 
 ---
 

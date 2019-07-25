@@ -17,9 +17,6 @@
     
   <properties>
     <java.version>1.8</java.version>
-    <docker.image.prefix>smartkuk</docker.image.prefix>
-    <axon.spring.boot.starter>4.1.1</axon.spring.boot.starter>
-    <dockerfile-maven-plugin.version>1.4.9</dockerfile-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -39,7 +36,7 @@
     <dependency>
       <groupId>org.axonframework</groupId>
       <artifactId>axon-spring-boot-starter</artifactId>
-      <version>${axon.spring.boot.starter}</version>
+      <version>${axon-spring-boot-starter.version}</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -88,13 +85,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-      <!-- <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <configuration>
-          <repository>${docker.image.prefix}/${project.artifactId}</repository>
-        </configuration>
-      </plugin> -->
       <!--
       https://github.com/spring-guides/gs-spring-boot-docker#containerize-it
       reduce tomcat startup time
@@ -112,25 +102,38 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
                 </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <version>0.30.0</version>
+        <version>${docker-maven-plugin.version}</version>
         <configuration>
           <images>
             <image>
               <alias>shipping-service</alias> 
               <name>${docker.image.prefix}/${project.artifactId}</name>
+              <build>
+                <!-- Dockerfile 파일이 위치한 장소를 설정(Enabled bulding with Dockerfile) -->
+                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                <!-- 부모 프로젝트의 도커 빌드를 skip 하기 위해서 설정한 skip이 상속되므로 false 지정 -->
+                <skip>false</skip>
+              </build>
+              <!--
+              docker:start 커맨드에서 사용하는 도커 기동 바인딩 포트 설정
+              -->
+              <run>
+                <ports>
+                  <port>38080:8080</port>
+                </ports>
+              </run>
             </image>
           </images>
         </configuration>

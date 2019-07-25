@@ -18,37 +18,36 @@
   
   <properties>
     <java.version>1.8</java.version>
+    <axon-spring-boot-starter.version>4.1.1</axon-spring-boot-starter.version>
+    <!--
+    io.fabric8:docker-maven-plugin
+    docker.image.prefix: 이미지 업로드시 사용하는 prefix
+    docker-maven-plugin.version: 플러그인 버전
+    verbose: Debugging mode 활성화 프로퍼티
+    docker.filter: 이미지를 생성하고 원격 저장소에 push 하는 대상 이미지
+    -->
     <docker.image.prefix>smartkuk</docker.image.prefix>
-    <dockerfile-maven-plugin.version>1.4.9</dockerfile-maven-plugin.version>
-    <!-- private.registry.url default value is docker.io -->
-    <private.registry.url>docker.io</private.registry.url>
+    <docker-maven-plugin.version>0.30.0</docker-maven-plugin.version>
+    <verbose>true</verbose>
+    <docker.filter>order-service,shipping-service,payment-service</docker.filter>
   </properties>
   
   <modules>
+    <module>core-apis</module>
     <module>order-service</module>
     <module>payment-service</module>
-    <module>core-apis</module>
     <module>shipping-service</module>
   </modules>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <version>0.30.0</version>
-        <configuration>
-          <images>
-            <image>
-              <name>${docker.image.prefix}/${project.artifactId}</name>
-              <build>
-                <skip>true</skip>
-              </build>
-            </image>
-          </images>
-        </configuration>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
