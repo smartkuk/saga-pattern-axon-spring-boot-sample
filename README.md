@@ -140,9 +140,35 @@
   $ ./mvnw -pl order-service clean package install docker:build docker:push
   ```
 
+* Docker registry 변경 혹은 저장소 변경
+
+  Docker 에서는 이미지를 저장하기 위해 registry 라는 것을 사용하게 되는데, 일반적으로 registry는 Docker 이미지를 Build 할때 사용하는 이름의 일부분이다. 첫번째 슬래쉬(```/```) 앞 부분에 dot(```.```) 또는 colon(```:```)이 포함되면 Docker는 이 부분을 자동으로 원격지 registry로 해석하여 처리를 한다. 루트 프로젝트 그리고 자식 프로젝트의 pom.xml 설정을 기준으로 Docker registry로 이미지가 등록(PUSH) 될때 다음 3개의 정보를 사용한다.
+
+  * docker.image.prefix
+
+    기본값은 smartkuk(필자의 hub.docker.io 사이트 ID이며 저장소 이름)이고, 이를 변경시 ```-Ddocker.image.prefix=my-repository``` 형태로 maven 커맨드에 포함시킨다.
+
+    ```shell
+    # docker.io 사이트에 saga 저장소로 이미지를 PUSH
+    $ ./mvnw docker:build docker:push -Ddocker.image.prefix=saga
+    ```
+
+  * docker.registry
+
+    기본값은 docker.io 되어있고, 다른 Docker registry를 사용하려면 ```-Ddocker.registry=my-docker-registry.io``` 형태로 maven 커맨드에 포함시킨다.
+
+    ```shell
+    # some-private-registry.io 사이트에 이미지를 PUSH(본 프로젝트를 기준으로 기본값으로 설정된 smartkuk 저장소로 처리)
+    $ ./mvnw docker:build docker:push -Ddocker.registry=some-private-registry.io
+    ```
+
+  * settings.xml
+
+    이 설정은 사용자가 직접 셋팅해야 하기 때문에 기본값은 없다. 만약 maven 커맨드를 실행하는 환경에 [Docker Engine](https://docs.docker.com/install/)이 설치가 되어있고, ```docker login``` 커맨드를 통해 로그인된 상태라면 settings.xml 파일에 인증 정보를 넣을 필요없이 이용가능(단, docker.registry 아큐먼트를 입력하지 않았을때)
+
 ---
 
-### minikube
+### Minikube
 
 쿠버네티스의 minikube 환경에서 테스트를 진행할 수 있도록 ```/minikube``` 경로에 yaml 파일들이 있다.
 
